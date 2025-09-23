@@ -1,0 +1,43 @@
+name: CI – Testes Python
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+    branches: ["main", "master"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python-ci:
+    name: Testes Python
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        script:
+          - q1/Q1a_insert_head.py
+          - q1/Q1b_insert_tail_no_tail.py
+          - q1/Q1c_second_smallest.py
+          - q1/Q1d_sum_square_matrices.py
+          - q1/Q1e_count_occurrences.py
+          - q2/Q2a_interval_sorted.py
+          - q2/Q2b_interval_unsorted.py
+          - q3/Q6a_bfs_adj_matrix.py
+          - q3/Q6b_dfs_adj_matrix_recursive.py
+          - q3/Q6c_dfs_adj_matrix_iterative.py
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Executando ${{ matrix.script }}
+        run: |
+          echo "Executando ${{ matrix.script }}"
+          timeout 15s python "src/${{ matrix.script }}"

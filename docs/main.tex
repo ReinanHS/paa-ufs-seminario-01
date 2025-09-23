@@ -1,0 +1,269 @@
+% =========================================================
+%  Respostas - Lista de Exercícios 1
+%  Estrutura com duas partes:
+%   (I) Respostas manuscritas (importadas de PDF/fotos)
+%   (II) Respostas em código (Python)
+% =========================================================
+\documentclass[12pt,openany]{book}
+
+% -------------------- Idioma e fontes --------------------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+
+% -------------------- Layout e utilidades ----------------
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{graphicx}   % \includegraphics
+\usepackage{pdfpages}   % \includepdf para páginas de um PDF
+\usepackage{float}      % [H]
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!60!black,
+  urlcolor=blue!60!black,
+  citecolor=blue!60!black
+}
+\usepackage{xparse}     % comandos com argumentos opcionais
+\usepackage{enumitem}   % listas compactas
+
+% -------------------- Código (Python) --------------------
+\usepackage{xcolor}
+\usepackage{listings}
+
+% Paleta mínima
+\definecolor{pybg}{RGB}{248,248,248}
+\definecolor{pyframe}{RGB}{220,220,220}
+\definecolor{pyblue}{RGB}{32,64,154}
+\definecolor{pygreen}{RGB}{34,139,34}
+\definecolor{pystring}{RGB}{163,21,21}
+\definecolor{pycomment}{RGB}{120,120,120}
+
+\lstdefinestyle{pythonstyle}{
+  language=Python,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{pyblue}\bfseries,
+  stringstyle=\color{pystring},
+  commentstyle=\color{pycomment}\itshape,
+  showstringspaces=false,
+  columns=fullflexible,
+  backgroundcolor=\color{pybg},
+  frame=single,
+  rulecolor=\color{pyframe},
+  frameround=ffff,
+  breaklines=true,
+  tabsize=2,
+  numbersep=8pt,
+  numbers=left,
+  numberstyle=\tiny\color{pycomment}
+}
+
+\lstdefinestyle{outputstyle}{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{pybg},
+  frame=single,
+  rulecolor=\color{pyframe},
+  frameround=ffff,
+  breaklines=true,
+  numbers=none
+}
+
+% (Opcional) inclusão direta de arquivos .py:
+% \lstinputlisting[style=pythonstyle]{caminho/arquivo.py}
+
+% -------------------- Macros para inserir manuscritos ----
+% Insere TODAS as páginas de um PDF escaneado:
+\NewDocumentCommand{\HandwrittenPDFAll}{m}{%
+  \includepdf[pages=-,pagecommand={\thispagestyle{plain}}]{#1}%
+}
+
+% Insere um intervalo/padrão de páginas de um PDF (ex.: 1-3,5):
+\NewDocumentCommand{\HandwrittenPDFPages}{m m}{%
+  \includepdf[pages={#2},pagecommand={\thispagestyle{plain}}]{#1}%
+}
+
+% Insere uma foto (JPG/PNG) de resposta manuscrita com legenda opcional:
+\NewDocumentCommand{\HandwrittenImage}{m O{} }{%
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{#1}
+    \IfNoValueTF{#2}{}{%
+      \caption{#2}
+    }
+  \end{figure}
+}
+
+% Macro auxiliar
+\newcommand{\CodeOutput}[2][]{%
+  \lstinputlisting[style=outputstyle,caption={#1},label={#2}]{#2}
+}
+
+% -------------------- Metadados --------------------------
+\title{Respostas \\ Lista de Exercícios 1}
+\author{Reinan Gabriel dos Santos Souza}
+\date{\today}
+
+% =========================================================
+\begin{document}
+\maketitle
+\tableofcontents
+
+% =========================================================
+\part{Respostas manuscritas}
+\HandwrittenPDFAll{respostas_manuscritas.pdf}
+
+% =========================================================
+\part{Respostas em código}
+
+\chapter{Códigos das questões}
+
+Todos os códigos das questões apresentados neste documento fazem parte do meu repositório público disponível no GitHub:
+
+\begin{center}
+\href{https://github.com/ReinanHS/paa-ufs-lista01}{\texttt{github.com/ReinanHS/paa-ufs-lista01}}
+\end{center}
+
+O presente PDF é apenas um anexo para facilitar a leitura e organização. Entretanto, o local de referência principal é o repositório, onde é possível:
+
+\begin{itemize}
+  \item Visualizar diretamente os arquivos fonte em Python de cada questão.
+  \item Clonar o repositório e executar os códigos localmente em sua própria máquina.
+  \item Acompanhar a execução dos algoritmos por meio do pipeline de \textbf{CI/CD} configurado no GitHub Actions.
+\end{itemize}
+
+\bigskip
+\noindent
+A seguir, são listados os códigos de cada questão, acompanhados de links diretos para os arquivos correspondentes no GitHub:
+
+\begin{itemize}[leftmargin=1.5cm]
+  \item Q1a: \href{https://github.com/ReinanHS/paa-ufs-lista01/blob/main/src/q1/Q1a_insert_head.py}{\texttt{src/q1/Q1a\_insert\_head.py}}
+  \item Q1b: \href{https://github.com/ReinanHS/paa-ufs-lista01/blob/main/src/q1/Q1b_insert_tail_no_tail.py}{\texttt{src/q1/Q1b\_insert\_tail\_no\_tail.py}}
+  \item Q1c: \href{https://github.com/ReinanHS/paa-ufs-lista01/blob/main/src/q1/Q1c_second_smallest.py}{\texttt{src/q1/Q1c\_second\_smallest.py}}
+  \item Q1d: \href{https://github.com/ReinanHS/paa-ufs-lista01/blob/main/src/q1/Q1d_sum_square_matrices.py}{\texttt{src/q1/Q1d\_sum\_square\_matrices.py}}
+  \item Q1e: \href{https://github.com/ReinanHS/paa-ufs-lista01/blob/main/src/q1/Q1e_count_occurrences.py}{\texttt{src/q1/Q1e\_count\_occurrences.py}}
+  \item Q2a: \href{https://github.com/ReinanHS/paa-ufs-lista01/blob/main/src/q2/Q2a_interval_sorted.py}{\texttt{src/q2/Q2a\_interval\_sorted.py}}
+  \item Q2b: \href{https://github.com/ReinanHS/paa-ufs-lista01/blob/main/src/q2/Q2b_interval_unsorted.py}{\texttt{src/q2/Q2b\_interval\_unsorted.py}}
+  \item Q6a: \href{https://github.com/ReinanHS/paa-ufs-lista01/blob/main/src/q3/Q6a_bfs_adj_matrix.py}{\texttt{src/q3/Q6a\_bfs\_adj\_matrix.py}}
+  \item Q6b: \href{https://github.com/ReinanHS/paa-ufs-lista01/blob/main/src/q3/Q6b_dfs_adj_matrix_recursive.py}{\texttt{src/q3/Q6b\_dfs\_adj\_matrix\_recursive.py}}
+  \item Q6c: \href{https://github.com/ReinanHS/paa-ufs-lista01/blob/main/src/q3/Q6c_dfs_adj_matrix_iterative.py}{\texttt{src/q3/Q6c\_dfs\_adj\_matrix\_iterative.py}}
+\end{itemize}
+
+\section{Questão 1}
+\subsection*{Q1a) Inserção na cabeça de uma lista simplesmente ligada}
+\lstinputlisting[style=pythonstyle, caption={Q1a: Inserção na cabeça}, label={lst:q1a}]{../src/q1/Q1a_insert_head.py}
+
+\noindent\textbf{Output esperado:}
+\begin{lstlisting}[style=outputstyle]
+python src/q1/Q1a_insert_head.py
+Lista: (vazia)
+Lista: 1 -> 2 -> 3
+\end{lstlisting}
+
+\newpage
+
+\subsection*{Q1b) Inserção no final (sem ponteiro de cauda)}
+\lstinputlisting[style=pythonstyle, caption={Q1b: Inserção no final sem cauda}, label={lst:q1b}]{../src/q1/Q1b_insert_tail_no_tail.py}
+
+\noindent\textbf{Output esperado:}
+\begin{lstlisting}[style=outputstyle]
+python src/q1/Q1b_insert_tail_no_tail.py
+Lista: 10 -> 20 -> 30
+\end{lstlisting}
+
+\newpage
+
+\subsection*{Q1c) Segundo menor elemento de um vetor}
+\lstinputlisting[style=pythonstyle, caption={Q1c: Segundo menor elemento}, label={lst:q1c}]{../src/q1/Q1c_second_smallest.py}
+
+\noindent\textbf{Output esperado:}
+\begin{lstlisting}[style=outputstyle]
+python src/q1/Q1c_second_smallest.py
+Segundo menor de [80, 60, 90, 10, 40, 20] = 20
+Segundo menor de [70, 80, 40, 30, 50] = 40
+Segundo menor de [100, 100, 100] = None
+\end{lstlisting}
+
+\newpage
+
+\subsection*{Q1d) Soma de matrizes quadradas}
+\lstinputlisting[style=pythonstyle, caption={Q1d: Soma de matrizes n$\times$n}, label={lst:q1d}]{../src/q1/Q1d_sum_square_matrices.py}
+
+\noindent\textbf{Output esperado:}
+\begin{lstlisting}[style=outputstyle]
+python src/q1/Q1d_sum_square_matrices.py
+
+Matriz A:
+  [10, 20]
+  [30, 40]
+
+Matriz B:
+  [50, 60]
+  [70, 80]
+
+A + B:
+  [60, 80]
+  [100, 120]
+\end{lstlisting}
+
+\newpage
+
+\subsection*{Q1e) Contagem de ocorrências em vetor desordenado}
+\lstinputlisting[style=pythonstyle, caption={Q1e: Contagem de ocorrências}, label={lst:q1e}]{../src/q1/Q1e_count_occurrences.py}
+
+\noindent\textbf{Output esperado:}
+\begin{lstlisting}[style=outputstyle]
+python src/q1/Q1e_count_occurrences.py
+Ocorrências de 3 em [3, 8, 6, 3, 5, 4, 3] = 3
+Ocorrências de 'a' em ['b', 'c', 'a', 'c', 'd', 'a'] = 2
+\end{lstlisting}
+
+\newpage
+
+\section{Questão 2}
+\subsection*{Q2a) Intervalo (max - min) em vetor ordenado}
+\lstinputlisting[style=pythonstyle, caption={Q2a: Intervalo em vetor ordenado}, label={lst:q2a}]{../src/q2/Q2a_interval_sorted.py}
+
+\noindent\textbf{Output esperado:}
+\begin{lstlisting}[style=outputstyle]
+python src/q2/Q2a_interval_sorted.py
+Intervalo de [1, 4, 9] = 8
+Intervalo de [-10, -5, 0, 5] = 15
+\end{lstlisting}
+
+\newpage
+
+\subsection*{Q2b) Intervalo (max - min) em vetor desordenado}
+\lstinputlisting[style=pythonstyle, caption={Q2b: Intervalo em vetor desordenado}, label={lst:q2b}]{../src/q2/Q2b_interval_unsorted.py}
+
+\noindent\textbf{Output esperado:}
+\begin{lstlisting}[style=outputstyle]
+python src/q2/Q2b_interval_unsorted.py
+Intervalo de [4, 9, 1] = 8
+Intervalo de [-5, 10, 0, 5, -10] = 20
+\end{lstlisting}
+
+\newpage
+
+\section{Questão 6}
+\subsection*{Q6a) BFS com matriz de adjacência}
+\lstinputlisting[style=pythonstyle, caption={Q6a: BFS matriz adjacência}, label={lst:q6a}]{../src/q3/Q6a_bfs_adj_matrix.py}
+
+\noindent\textbf{Output esperado:}
+\begin{lstlisting}[style=outputstyle]
+python src/q3/Q6a_bfs_adj_matrix.py
+BFS a partir de 0: [0, 1, 2]
+BFS a partir de 1: [1, 0, 2]
+\end{lstlisting}
+
+\newpage
+
+\subsection*{Q6b) DFS iterativa com matriz de adjacência}
+\lstinputlisting[style=pythonstyle, caption={Q6c: DFS iterativa matriz adjacência}, label={lst:q6c}]{../src/q3/Q6c_dfs_adj_matrix_iterative.py}
+
+\noindent\textbf{Output esperado:}
+\begin{lstlisting}[style=outputstyle]
+python src/q3/Q6c_dfs_adj_matrix_iterative.py
+DFS (iter) a partir de 0: [0, 1, 2, 3]
+DFS (iter) a partir de 2: [2, 0, 1, 3]
+\end{lstlisting}
+
+\end{document}
