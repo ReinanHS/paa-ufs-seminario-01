@@ -2,8 +2,7 @@
 
 <img src="https://upload.wikimedia.org/wikipedia/commons/1/1c/Ufs_principal_positiva-nova.png" alt="ufs-logo" width="20%">
 
-<h1>Projeto e Análise de Algoritmos</h1>
-<h3>Seminário 1 — PAA (Algoritmos em Grafos)</h3>
+<h1>Seminário 1 — PAA (Algoritmos em Grafos)</h1>
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/ReinanHS/paa-ufs-seminario-01?machine=standardLinux2gb)
 
