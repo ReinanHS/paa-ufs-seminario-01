@@ -75,6 +75,12 @@ Repositório que centraliza os materiais do seminário da disciplina **Projeto e
 
 ---
 
+## Links
+
+- [Link para o Google Slides](https://docs.google.com/presentation/d/1X6qxrnNSXACRhkNveZjIO241CHSsGpuZnD-f4Vr6eQY/edit?slide=id.p#slide=id.p)
+
+---
+
 ## 🛠 Tecnologias principais
 
 - **Python 3.11** (scripts de resolução)
