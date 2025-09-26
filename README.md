@@ -9,11 +9,33 @@
 <p align="center">
   :star: Colaboradores :star:
 </p>
-<p align="center">
-  <a href="https://github.com/ReinanHS">
-      <img width="64" height="64" src="https://github.com/reinanhs.png" alt="ReinanHS avatar">
-  </a>
-</p>
+<center>
+<table align="center">
+  <tr>
+    <td align="center">
+      <a href="https://github.com/ReinanHS">
+        <img src="https://github.com/reinanhs.png" height="64px" width="64px;" alt="Reinan Gabriel"/>
+      </a>
+      <br />
+      <a href="https://github.com/ReinanHS">Reinan Gabriel</a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/pauloEzequiel">
+        <img src="https://github.com/pauloEzequiel.png" height="64px" width="64px;" alt="Paulo Ezequiel"/>
+      </a>
+      <br />
+      <a href="https://github.com/pauloEzequiel">Paulo Ezequiel</a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/joaorabelo">
+        <img src="https://github.com/joaorabelo.png" height="64px" width="64px;" alt="João Rabelo"/>
+      </a>
+      <br />
+      <a href="https://github.com/joaorabelo">João Rabelo</a>
+    </td>
+  </tr>
+</table>
+</center>
 
 <p align="center">
   <a href="https://github.com/ReinanHS/paa-ufs-seminario-01/actions/workflows/python-ci.yml">
