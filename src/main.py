@@ -299,8 +299,14 @@ def main():
 
     tsp = carregar_instancia(pontos_path, matriz_path)
 
+    print("\nIniciando a execução do Algoritmo Genético...")
     melhor_rota, melhor_custo, historico = evoluir(tsp)
 
+    print("\n--- Resultados ---")
+    print(f"Melhor custo (distância) encontrado: {melhor_custo:.4f}")
+    print(f"Melhor rota (sequência de cidades): {melhor_rota}")
+
+    print("\nGerando visualizações...")
     plot_melhor_rota(tsp, melhor_rota, melhor_custo, save_as=None)
     plot_convergencia(historico, save_as=None)
 
