@@ -2,7 +2,7 @@
 
 <img src="https://upload.wikimedia.org/wikipedia/commons/1/1c/Ufs_principal_positiva-nova.png" alt="ufs-logo" width="20%">
 
-<h1>Seminário 1 — PAA (Algoritmos em Grafos)</h1>
+<h1>Seminário 1 — PAA <br>Problema do Caixeiro</h1>
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/ReinanHS/paa-ufs-seminario-01?machine=standardLinux2gb)
 
@@ -58,7 +58,7 @@ Repositório que centraliza os materiais do seminário da disciplina **Projeto e
 
 - **Problema do Caixeiro Viajante (PCV/TSP).**
 
-## O que apresentar (checklist essencial)
+## O que apresentar
 
 - **Introdução** breve ao problema e **uma aplicação real**.
 - **Como o algoritmo escolhido resolve o problema** (ótimo ou aproximado), focando no **problema** e na **ideia do algoritmo**.
@@ -105,9 +105,9 @@ Repositório que centraliza os materiais do seminário da disciplina **Projeto e
 
 ## 🛠 Tecnologias principais
 
-- **Python 3.11** (scripts de resolução)
-- **GitHub Actions** (CI para Python e para LaTeX)
-- **GitHub Pages** (publicação do PDF)
+- **Python 3.12** (scripts de resolução)
+- **GitHub Actions** (CI para Python)
+- **GitHub Pages** (publicação do frontend)
 
 ---
 
@@ -115,7 +115,7 @@ Repositório que centraliza os materiais do seminário da disciplina **Projeto e
 
 ### Pré-requisitos
 
-- Python 3.11+
+- Python 3.12+
 
 ### Python
 
@@ -126,8 +126,15 @@ source .venv/bin/activate  # Linux/macOS
 # .venv\Scripts\activate   # Windows (PowerShell)
 
 # executar um script específico
-pip install pandas matplotlib
+pip install pandas matplotlib pytest
 python src/main.py
+```
+
+### Testes unitários
+
+```bash
+pip pytest
+pytest -q
 ```
 
 ---
