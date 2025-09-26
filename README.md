@@ -38,11 +38,27 @@
 </center>
 
 <p align="center">
+  <!-- CI -->
   <a href="https://github.com/ReinanHS/paa-ufs-seminario-01/actions/workflows/python-ci.yml">
     <img src="https://github.com/ReinanHS/paa-ufs-seminario-01/actions/workflows/python-ci.yml/badge.svg" alt="Status - CI Testes Python">
   </a>
-  <a href="https://github.com/ReinanHS/paa-ufs-seminario-01/actions/workflows/latex-pages.yml">
-    <img src="https://github.com/ReinanHS/paa-ufs-seminario-01/actions/workflows/latex-pages.yml/badge.svg" alt="Status - Pages">
+  <!-- GitHub Pages (online/offline) -->
+  <a href="https://reinanhs.github.io/paa-ufs-seminario-01/">
+    <img src="https://img.shields.io/website?url=https%3A%2F%2Freinanhs.github.io%2Fpaa-ufs-seminario-01%2F&label=GitHub%20Pages" alt="GitHub Pages">
+  </a>
+  <!-- Python version -->
+  <img src="https://img.shields.io/badge/python-3.12%2B-blue.svg" alt="Python 3.12+">
+  <!-- License -->
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="Licença MIT">
+  </a>
+  <!-- Last commit -->
+  <a href="https://github.com/ReinanHS/paa-ufs-seminario-01/commits/main">
+    <img src="https://img.shields.io/github/last-commit/ReinanHS/paa-ufs-seminario-01.svg" alt="Último commit">
+  </a>
+  <!-- Stars -->
+  <a href="https://github.com/ReinanHS/paa-ufs-seminario-01/stargazers">
+    <img src="https://img.shields.io/github/stars/ReinanHS/paa-ufs-seminario-01.svg?style=social" alt="Stars">
   </a>
 </p>
 
