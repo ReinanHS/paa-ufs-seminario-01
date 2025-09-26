@@ -1,0 +1,144 @@
+name: Python CI + Plots + Pages
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  tests:
+    name: Run unit tests
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: ".:./src"
+      MPLBACKEND: "Agg"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Ensure src is a package (create __init__.py if missing)
+        run: |
+          [ -f src/__init__.py ] || touch src/__init__.py
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install deps (pytest + libs)
+        run: |
+          pip install --upgrade pip
+          pip install pytest numpy pandas matplotlib
+
+      - name: Run pytest
+        run: pytest -q
+
+  run-and-artifacts:
+    name: Run GA and publish plot artifacts
+    needs: tests
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: ".:./src"
+      MPLBACKEND: "Agg"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Ensure src is a package (create __init__.py if missing)
+        run: |
+          [ -f src/__init__.py ] || touch src/__init__.py
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install runtime deps
+        run: |
+          pip install --upgrade pip
+          pip install numpy pandas matplotlib
+
+      - name: Run TSP GA and save plots
+        run: |
+          python - <<'PY'
+          import pathlib, random
+          import numpy as np
+          from src.main import (
+              carregar_instancia,
+              evoluir,
+              plot_melhor_rota,
+              plot_convergencia,
+              PONTOS_FILENAME,
+              MATRIZ_FILENAME,
+              SEMENTE,
+          )
+
+          random.seed(SEMENTE)
+          np.random.seed(SEMENTE)
+
+          pontos_path = f"data/{PONTOS_FILENAME}"
+          matriz_path = f"data/{MATRIZ_FILENAME}"
+
+          tsp = carregar_instancia(pontos_path, matriz_path)
+          rota, custo, hist = evoluir(tsp)
+
+          outdir = pathlib.Path("artifacts")
+          outdir.mkdir(exist_ok=True)
+
+          plot_melhor_rota(tsp, rota, custo, save_as=str(outdir / "melhor_rota.png"))
+          plot_convergencia(hist, save_as=str(outdir / "convergencia.png"))
+
+          with open(outdir / "resultados.txt", "w", encoding="utf-8") as f:
+              f.write("=== Resultados do Algoritmo Genético (TSP) ===\n")
+              f.write(f"Melhor custo (distância): {custo:.4f}\n")
+              f.write(f"Melhor rota: {rota}\n")
+              f.write(f"Nº de gerações: {len(hist)}\n")
+          PY
+
+      - name: Upload artifacts (plots + resultados)
+        uses: actions/upload-artifact@v4
+        with:
+          name: tsp-plots
+          path: artifacts/*
+          if-no-files-found: error
+          retention-days: 14
+
+  build-and-deploy-pages:
+    name: Deploy GitHub Pages (index.html)
+    if: github.event_name == 'push'
+    needs: [ tests ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare static site content
+        run: |
+          mkdir -p site
+          if [ -f data/index.html ]; then
+            cp data/index.html site/index.html
+          elif [ -f src/index.html ]; then
+            cp src/index.html site/index.html
+          else
+            echo '<!doctype html><meta charset="utf-8"><h1>index.html não encontrado</h1><p>Coloque seu index em <code>data/index.html</code> ou <code>src/index.html</code>.</p>' > site/index.html
+          fi
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
