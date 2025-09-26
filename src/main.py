@@ -3,6 +3,7 @@ import pathlib
 import random
 import sys
 from dataclasses import dataclass
+from pathlib import Path
 from typing import List, Tuple, Optional
 
 try:
@@ -270,34 +271,40 @@ def carregar_instancia(pontos_path: str, matriz_path: str) -> TSPInstance:
     return TSPInstance(labels=labels, coords=coords, dist=dist)
 
 
+def encontrar_arquivo(nome: str, nomes_alternativos: Optional[List[str]] = None) -> Path:
+    script_dir = Path(__file__).resolve().parent
+    raiz = script_dir.parent
+    diretorios = [raiz, raiz / "data", raiz / "src"]
+
+    nomes = [nome] + (nomes_alternativos or [])
+    tentativas = []
+
+    for n in nomes:
+        for d in diretorios:
+            candidato = d / n
+            tentativas.append(candidato)
+            if candidato.is_file():
+                return candidato
+
+    lista = "\n".join(f"- {p}" for p in tentativas)
+    raise FileNotFoundError(
+        f"Arquivo não encontrado. Procurado por {nomes} em:\n{lista}"
+    )
+
+
 def main():
     random.seed(SEMENTE)
     np.random.seed(SEMENTE)
 
-    base_dir = pathlib.Path(".")
-    caminhos_tentativa = [
-        base_dir / PONTOS_FILENAME,
-        pathlib.Path("../data") / PONTOS_FILENAME,
-    ]
-    pontos_path = None
-    for c in caminhos_tentativa:
-        if c.exists():
-            pontos_path = str(c)
-            break
-    if pontos_path is None:
-        raise FileNotFoundError(f"Arquivo de pontos não encontrado: {PONTOS_FILENAME}")
+    try:
+        pontos_path = str(encontrar_arquivo(PONTOS_FILENAME))
+    except FileNotFoundError as e:
+        raise FileNotFoundError(f"Arquivo de pontos não encontrado: {PONTOS_FILENAME}\n{e}")
 
-    caminhos_tentativa = [
-        base_dir / MATRIZ_FILENAME,
-        pathlib.Path("../data") / MATRIZ_FILENAME,
-    ]
-    matriz_path = None
-    for c in caminhos_tentativa:
-        if c.exists():
-            matriz_path = str(c)
-            break
-    if matriz_path is None:
-        raise FileNotFoundError(f"Arquivo de matriz não encontrado: {MATRIZ_FILENAME}")
+    try:
+        matriz_path = str(encontrar_arquivo(MATRIZ_FILENAME))
+    except FileNotFoundError as e:
+        raise FileNotFoundError(f"Arquivo de matriz não encontrado: {MATRIZ_FILENAME}\n{e}")
 
     tsp = carregar_instancia(pontos_path, matriz_path)
 
