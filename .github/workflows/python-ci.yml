@@ -86,7 +86,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: data/index.html
+          path: data
 
   deploy-pages:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
