@@ -205,6 +205,8 @@ def evoluir(tsp: TSPInstance) -> Tuple[List[int], float, List[float]]:
             nova.append(filho)
 
         pop = nova
+        if gen % 50 == 0:
+            print(f"Geração {gen:4d} | melhor custo: {melhor_custo:.4f}")
 
     assert melhor_rota is not None
     return melhor_rota, melhor_custo, historico_melhor
