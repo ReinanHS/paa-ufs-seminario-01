@@ -85,17 +85,7 @@ jobs:
 
       - name: Prepare site/
         run: |
-          if [ -f data/index.html ]; then
-            cp data/index.html site/index.html
-          elif [ -f src/index.html ]; then
-            cp src/index.html site/index.html
-          else
-            cat > site/index.html <<'HTML'
-            <!doctype html><meta charset="utf-8">
-            <h1>Página do Seminário</h1>
-            <p>Adicione seu index em <code>data/index.html</code> ou <code>src/index.html</code>.</p>
-            HTML
-          fi
+          cp data/index.html site/index.html
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
