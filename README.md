@@ -104,6 +104,7 @@ source .venv/bin/activate  # Linux/macOS
 # .venv\Scripts\activate   # Windows (PowerShell)
 
 # executar um script específico
+pip install pandas matplotlib
 python src/main.py
 ```
 
