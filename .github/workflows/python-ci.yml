@@ -17,97 +17,58 @@ concurrency:
 
 jobs:
   tests:
-    name: Run unit tests
     runs-on: ubuntu-latest
     env:
       PYTHONPATH: ".:./src"
-      MPLBACKEND: "Agg"
+      MPLBACKEND: Agg
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Ensure src is a package (create __init__.py if missing)
-        run: |
-          [ -f src/__init__.py ] || touch src/__init__.py
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: "pip"
-
-      - name: Install deps (pytest + libs)
-        run: |
+      - uses: actions/checkout@v4
+      - run: '[ -f src/__init__.py ] || touch src/__init__.py'
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: "pip" }
+      - run: |
           pip install --upgrade pip
           pip install pytest numpy pandas matplotlib
-
-      - name: Run pytest
-        run: pytest -q
+      - run: pytest -q
 
   run-and-artifacts:
-    name: Run GA and publish plot artifacts
     needs: tests
     runs-on: ubuntu-latest
     env:
       PYTHONPATH: ".:./src"
-      MPLBACKEND: "Agg"
+      MPLBACKEND: Agg
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Ensure src is a package (create __init__.py if missing)
-        run: |
-          [ -f src/__init__.py ] || touch src/__init__.py
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: "pip"
-
-      - name: Install runtime deps
-        run: |
+      - uses: actions/checkout@v4
+      - run: '[ -f src/__init__.py ] || touch src/__init__.py'
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: "pip" }
+      - run: |
           pip install --upgrade pip
           pip install numpy pandas matplotlib
-
       - name: Run TSP GA and save plots
         run: |
           python - <<'PY'
           import pathlib, random
           import numpy as np
           from src.main import (
-              carregar_instancia,
-              evoluir,
-              plot_melhor_rota,
-              plot_convergencia,
-              PONTOS_FILENAME,
-              MATRIZ_FILENAME,
-              SEMENTE,
+              carregar_instancia, evoluir,
+              plot_melhor_rota, plot_convergencia,
+              PONTOS_FILENAME, MATRIZ_FILENAME, SEMENTE
           )
-
-          random.seed(SEMENTE)
-          np.random.seed(SEMENTE)
-
-          pontos_path = f"data/{PONTOS_FILENAME}"
-          matriz_path = f"data/{MATRIZ_FILENAME}"
-
-          tsp = carregar_instancia(pontos_path, matriz_path)
+          random.seed(SEMENTE); np.random.seed(SEMENTE)
+          tsp = carregar_instancia(f"data/{PONTOS_FILENAME}", f"data/{MATRIZ_FILENAME}")
           rota, custo, hist = evoluir(tsp)
-
-          outdir = pathlib.Path("artifacts")
-          outdir.mkdir(exist_ok=True)
-
+          outdir = pathlib.Path("artifacts"); outdir.mkdir(exist_ok=True)
           plot_melhor_rota(tsp, rota, custo, save_as=str(outdir / "melhor_rota.png"))
           plot_convergencia(hist, save_as=str(outdir / "convergencia.png"))
-
-          with open(outdir / "resultados.txt", "w", encoding="utf-8") as f:
-              f.write("=== Resultados do Algoritmo Genético (TSP) ===\n")
-              f.write(f"Melhor custo (distância): {custo:.4f}\n")
-              f.write(f"Melhor rota: {rota}\n")
-              f.write(f"Nº de gerações: {len(hist)}\n")
+          (outdir / "index.html").write_text(
+              "<h1>Resultados</h1>"
+              f"<p>Melhor custo: {custo:.4f}</p>"
+              '<img src="melhor_rota.png"><br><img src="convergencia.png">',
+              encoding="utf-8"
+          )
           PY
-
-      - name: Upload artifacts (plots + resultados)
+      - name: Upload GA artifacts (NOT pages)
         uses: actions/upload-artifact@v4
         with:
           name: tsp-plots
@@ -115,24 +76,27 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
-  build-and-deploy-pages:
-    name: Deploy GitHub Pages (index.html)
-    if: github.event_name == 'push'
-    needs: [ tests ]
+  build-pages:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [ tests, run-and-artifacts ]
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Prepare static site content
+      - name: Prepare site/
         run: |
-          mkdir -p site
+          mkdir -p site/assets
+          # Prioriza data/index.html -> depois src/index.html -> fallback
           if [ -f data/index.html ]; then
             cp data/index.html site/index.html
           elif [ -f src/index.html ]; then
             cp src/index.html site/index.html
           else
-            echo '<!doctype html><meta charset="utf-8"><h1>index.html não encontrado</h1><p>Coloque seu index em <code>data/index.html</code> ou <code>src/index.html</code>.</p>' > site/index.html
+            cat > site/index.html <<'HTML'
+            <!doctype html><meta charset="utf-8">
+            <h1>Página do Seminário</h1>
+            <p>Adicione seu index em <code>data/index.html</code> ou <code>src/index.html</code>.</p>
+            HTML
           fi
 
       - name: Upload Pages artifact
@@ -140,5 +104,10 @@ jobs:
         with:
           path: site
 
+  deploy-pages:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build-pages
+    runs-on: ubuntu-latest
+    steps:
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
