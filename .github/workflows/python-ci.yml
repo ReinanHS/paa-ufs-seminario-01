@@ -85,8 +85,6 @@ jobs:
 
       - name: Prepare site/
         run: |
-          mkdir -p site/assets
-          # Prioriza data/index.html -> depois src/index.html -> fallback
           if [ -f data/index.html ]; then
             cp data/index.html site/index.html
           elif [ -f src/index.html ]; then
