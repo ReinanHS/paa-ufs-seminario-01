@@ -221,7 +221,12 @@ Gerando visualizações...
 O script também abre:
 
 * **Melhor Rota Encontrada** (scatter + polilinha fechando o ciclo);
+  
+<img width="450" height="350" alt="Figure_1" src="https://github.com/user-attachments/assets/73c89e75-dd25-47c8-9e47-d7fef7111b1c" />
+
 * **Convergência do AG** (melhor custo por geração).
+
+<img width="450" height="200" alt="Figure_2" src="https://github.com/user-attachments/assets/41939057-9f7e-4857-beca-4f32821b7d30" />
 
 > **Reprodutibilidade**: o projeto utiliza `SEMENTE=42` para `random` e `numpy`.
 
