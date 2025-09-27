@@ -3,7 +3,49 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AG do Caixeiro-Viajante • Editor Interativo</title>
+    <title>AG do Caixeiro-Viajante</title>
+    <!-- SEO Meta Tags -->
+    <meta
+      name="description"
+      content="Simulador interativo do Algoritmo Genético para o Problema do Caixeiro Viajante (TSP/PCV). Monte trajetos, visualize soluções e baixe dados para análise. Projeto da disciplina de Projeto e Análise de Algoritmos (PAA) da UFS."
+    />
+    <meta
+      name="keywords"
+      content="Caixeiro Viajante, TSP, Algoritmo Genético, Simulação, PAA, UFS, Otimização, Visualização, Inteligência Artificial, Heurística, Editor Interativo"
+    />
+    <meta name="author" content="ReinanHS" />
+    <meta name="robots" content="index, follow" />
+    <link
+      rel="canonical"
+      href="https://reinanhs.github.io/paa-ufs-seminario-01/"
+    />
+    <meta name="theme-color" content="#1f2937" />
+    <!-- Open Graph / Facebook -->
+    <meta property="og:title" content="AG do Caixeiro-Viajante" />
+    <meta
+      property="og:description"
+      content="Simulador interativo do Algoritmo Genético para o Problema do Caixeiro Viajante (TSP/PCV). Monte trajetos, visualize soluções e baixe dados para análise."
+    />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://reinanhs.github.io/paa-ufs-seminario-01/"
+    />
+    <meta
+      property="og:image"
+      content="https://reinanhs.github.io/paa-ufs-seminario-01/img/thumbnail.png"
+    />
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AG do Caixeiro-Viajante " />
+    <meta
+      name="twitter:description"
+      content="Simulador interativo do Algoritmo Genético para o Problema do Caixeiro Viajante (TSP/PCV). Monte trajetos, visualize soluções e baixe dados para análise."
+    />
+    <meta
+      name="twitter:image"
+      content="https://reinanhs.github.io/paa-ufs-seminario-01/img/thumbnail.png"
+    />
     <link
       href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css"
       rel="stylesheet"
@@ -15,13 +57,13 @@
   </head>
   <body>
     <div id="app">
-      <header><h1>AG TSP – Editor Interativo</h1></header>
+      <header><h1>Algoritmo Genético - Caixeiro Viajante</h1></header>
       <main class="main-container">
         <div id="map-container">
           <div id="map"></div>
           <div class="panel">
             <div id="city-selection-panel">
-              <h2>1. Monte seu Trajeto</h2>
+              <h2>1. Monte seu trajeto</h2>
               <p>
                 <b>Adicionar:</b> Clique em um local vazio no mapa.<br />
                 <b>Mover:</b> Clique e arraste um ponto existente.<br />
@@ -31,7 +73,7 @@
                 class="row"
                 style="justify-content: center; font-size: 1.1rem"
               >
-                Cidades Definidas: <b id="city-count">0</b>
+                Cidades definidas: <b id="city-count">0</b>
               </div>
 
               <div class="download-section">
@@ -41,7 +83,7 @@
                     id="btnDownloadDistances"
                     style="flex-grow: 1; min-width: 45%"
                   >
-                    ⬇ Matriz de Distâncias (.csv)
+                    ⬇ Matriz de distâncias (.csv)
                   </button>
                   <button
                     id="btnDownloadPoints"
@@ -57,14 +99,14 @@
                 class="primary"
                 style="width: 100%; margin-top: 10px"
               >
-                Confirmar Cidades e Prosseguir
+                Próxima etapa
               </button>
             </div>
 
             <div id="ga-settings" style="display: none">
-              <h2>2. Configure o Algoritmo</h2>
+              <h2>2. Configure o algoritmo</h2>
               <div class="row">
-                <label for="popSize">Tamanho da População</label
+                <label for="popSize">Tamanho da população</label
                 ><input
                   id="popSize"
                   type="number"
@@ -77,7 +119,7 @@
               </div>
 
               <div class="row">
-                <label for="gensPerPlay">Gerações por Play</label
+                <label for="gensPerPlay">Gerações por play</label
                 ><input
                   id="gensPerPlay"
                   type="number"
@@ -90,7 +132,7 @@
               </div>
 
               <div class="row">
-                <label for="mutRate">Taxa de Mutação (%)</label
+                <label for="mutRate">Taxa de mutação (%)</label
                 ><input
                   id="mutRate"
                   type="number"
@@ -102,7 +144,7 @@
                 />
               </div>
               <div class="row">
-                <label for="chkElitism">Utilizar Elitismo</label
+                <label for="chkElitism">Utilizar elitismo</label
                 ><input
                   id="chkElitism"
                   type="checkbox"
@@ -116,12 +158,12 @@
                 class="primary"
                 style="width: 100%; margin-top: 15px"
               >
-                Iniciar Simulação
+                Iniciar simulação
               </button>
             </div>
 
             <div id="simulation-controls" style="display: none">
-              <h2>3. Simulação em Andamento</h2>
+              <h2>3. Simulação em andamento</h2>
               <div class="controls">
                 <button id="btnPlay" class="primary">▶ Play</button>
                 <button id="btnPause" class="secondary">⏸ Pausar</button>
@@ -129,7 +171,7 @@
                 <button id="btnReset" class="secondary">↺ Reiniciar</button>
               </div>
               <div class="row">
-                <label for="displayMode">Modo de Exibição</label
+                <label for="displayMode">Modo de exibição</label
                 ><select
                   id="displayMode"
                   style="
@@ -177,74 +219,54 @@
         </div>
         <div id="right-panel">
           <div id="project-info" class="data-card">
-            <h3>Seminário 1: Problema do Caixeiro Viajante (PCV/TSP)</h3>
+            <h3>Informações</h3>
             <p style="margin-bottom: 12px; font-size: 0.9rem">
-              Este é um projeto de simulação para a disciplina de **Projeto e
-              Análise de Algoritmos (PAA) da UFS**.
+              Simulador interativo do <b>Algoritmo Genético</b> para o
+              <b>Problema do Caixeiro Viajante (TSP/PCV)</b>. Monte trajetos,
+              visualize soluções e baixe dados para análise. Projeto da
+              disciplina de projeto e análise de algoritmos da
+              <a href="https://www.ufs.br/">UFS</a>.
             </p>
 
-            <h4
-              style="
-                font-size: 0.95rem;
-                font-weight: 700;
-                color: var(--accent-color);
-                margin: 0 0 8px 0;
-              "
-            >
-              Abordagem: Algoritmo Genético (AG)
-            </h4>
-            <ul
-              style="
-                list-style-type: disc;
-                margin: 0 0 15px 15px;
-                padding: 0;
-                font-size: 0.85rem;
-                color: var(--text-secondary);
-              "
-            >
+            <p>Para mais informações veja o repositório abaixo:</p>
+
+            <ul>
               <li>
-                **Motivação:** Escalar o TSP encontrando *boas soluções* em
-                tempo razoável (complexidade do TSP exato é inviável).
-              </li>
-              <li>
-                **Implementação:** Utiliza seleção por Torneio, Crossover OX,
-                Mutação (Swap) e Elitismo.
+                <a href="https://github.com/ReinanHS/paa-ufs-seminario-01"
+                  >Link para o repositório no GitHub</a
+                >
               </li>
             </ul>
 
+            <h4 style="font-size: 0.95rem; font-weight: 700; margin: 0 0 8px 0">
+              Colaboradores
+            </h4>
+            <p>Apresentamos os principais membros da equipe:</p>
+              <ul>
+                <li><a href="https://github.com/ReinanHS">@reinanhs</a></li>
+                <li><a href="https://github.com/pauloEzequiel">@pauloEzequiel</a></li>
+                <li><a href="https://github.com/joaorabelo">@joaorabelo</a></li>
+              </ul>
+            </p>
             <h4
               style="
                 font-size: 0.95rem;
                 font-weight: 700;
-                color: var(--accent-color);
                 margin: 0 0 8px 0;
               "
             >
-              Esta Visualização Web
+              QR Code
             </h4>
-            <ul
-              style="
-                list-style-type: disc;
-                margin: 0 0 0 15px;
-                padding: 0;
-                font-size: 0.85rem;
-                color: var(--text-secondary);
-              "
-            >
-              <li>
-                **Fase 1 (Atual):** Monte seu trajeto, defina as cidades e baixe
-                os dados (`.csv`).
-              </li>
-              <li>
-                **Fase 3 (Simulação):** Visualize a evolução em tempo real do
-                AG, a convergência de custo e o Top 10 de indivíduos.
-              </li>
-            </ul>
+            <p>
+              Escaneie o QR Code abaixo para acessar o repositório no GitHub
+              diretamente do seu dispositivo móvel:
+            </p>
+            <img src="https://www.qrtag.net/api/qr_1280.png?url=https://github.com/ReinanHS/paa-ufs-seminario-01" alt="QR Code para o site" style="width: 100%; max-width: 200px; display: block; margin: 0 auto" />
           </div>
 
           <div id="ga-strategy-info" class="data-card" style="display: none">
-            <h3 style="color: var(--accent-color)">
-              Estratégia e Operadores do Algoritmo Genético
+            <h3>
+              Operadores do Algoritmo Genético
             </h3>
             <p
               style="
@@ -257,25 +279,19 @@
               qualidade da solução.
             </p>
             <div class="strategy-info" style="border-top: none; padding-top: 0">
-              <h4>Componentes Utilizados:</h4>
+              <h4>Componentes utilizados:</h4>
               <ul style="list-style-type: none; margin-left: 0">
                 <li>
-                  **✅ Seleção:** **Torneio** ($k=5$). Escolhe o indivíduo de
-                  melhor *fitness* entre 5 amostras aleatórias da população.
+                  <span style="font-weight: bold; color: #16a34a">✅ Seleção:</span> <b>Torneio</b> (k=5). Escolhe o indivíduo de melhor <i>fitness</i> entre 5 amostras aleatórias da população.
                 </li>
                 <li>
-                  **✅ Crossover:** **Order Crossover (OX)**. Troca uma sub-rota
-                  entre os pais, preservando a ordem relativa dos pontos
-                  restantes. Essencial para problemas de ordenação (TSP).
+                  <span style="font-weight: bold; color: #16a34a">✅ Crossover:</span> <b>Order Crossover (OX)</b>. Troca uma sub-rota entre os pais, preservando a ordem relativa dos pontos restantes. Essencial para problemas de ordenação (TSP).
                 </li>
                 <li>
-                  **✅ Mutação:** **Inversão (Inversion)**. Inverte a ordem de
-                  uma sub-seção aleatória da rota. A probabilidade é controlada
-                  pela **Taxa de Mutação** selecionada.
+                  <span style="font-weight: bold; color: #16a34a">✅ Mutação:</span> <b>Inversão (Inversion)</b>. Inverte a ordem de uma sub-seção aleatória da rota. A probabilidade é controlada pela <b>Taxa de Mutação</b> selecionada.
                 </li>
                 <li>
-                  **✅ Elitismo:** Preserva os **2 melhores** indivíduos da
-                  geração anterior (se a *flag* for ativada).
+                  <span style="font-weight: bold; color: #16a34a">✅ Elitismo:</span> Preserva os <b>2 melhores</b> indivíduos da geração anterior (se a <i>flag</i> for ativada).
                 </li>
               </ul>
             </div>
@@ -286,17 +302,17 @@
             style="display: none; flex-direction: column; gap: 1.5rem"
           >
             <div class="data-card">
-              <h3>Convergência Genética</h3>
+              <h3>Convergência genética</h3>
               <div id="chart-container">
                 <canvas id="convergenceChart"></canvas>
               </div>
             </div>
             <div class="data-card">
-              <h3>Top 10 Indivíduos (Geração Atual)</h3>
+              <h3>Top 10 indivíduos (Geração atual)</h3>
               <div id="top-individuals-table"></div>
             </div>
             <div class="data-card">
-              <h3>Legenda das Cidades</h3>
+              <h3>Legenda das cidades</h3>
               <div id="city-legend"></div>
             </div>
           </div>

@@ -220,3 +220,7 @@ h2 {
 .strategy-info li {
   margin-bottom: 5px;
 }
+
+a {
+  color: var(--text-secondary);
+}
