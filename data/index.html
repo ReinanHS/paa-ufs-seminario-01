@@ -218,6 +218,25 @@
         border: 1px solid #374151;
         text-align: center;
       }
+
+      .strategy-info {
+
+      }
+      .strategy-info h4 {
+        font-size: 0.95rem;
+        color: var(--text-primary);
+        margin: 0 0 8px 0;
+      }
+      .strategy-info ul {
+        margin: 0 0 10px 10px;
+        padding: 0;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        list-style-type: none;
+      }
+      .strategy-info li {
+        margin-bottom: 5px;
+      }
     </style>
   </head>
   <body>
@@ -317,6 +336,7 @@
                   style="width: 20px; height: 20px"
                 />
               </div>
+
               <button
                 id="btnStart"
                 class="primary"
@@ -381,20 +401,130 @@
             </div>
           </div>
         </div>
-        <div id="right-panel" style="display: none">
-          <div class="data-card">
-            <h3>Convergência Genética</h3>
-            <div id="chart-container">
-              <canvas id="convergenceChart"></canvas>
+        <div id="right-panel">
+          <div id="project-info" class="data-card">
+            <h3>Seminário 1: Problema do Caixeiro Viajante (PCV/TSP)</h3>
+            <p style="margin-bottom: 12px; font-size: 0.9rem">
+              Este é um projeto de simulação para a disciplina de **Projeto e
+              Análise de Algoritmos (PAA) da UFS**.
+            </p>
+
+            <h4
+              style="
+                font-size: 0.95rem;
+                font-weight: 700;
+                color: var(--accent-color);
+                margin: 0 0 8px 0;
+              "
+            >
+              Abordagem: Algoritmo Genético (AG)
+            </h4>
+            <ul
+              style="
+                list-style-type: disc;
+                margin: 0 0 15px 15px;
+                padding: 0;
+                font-size: 0.85rem;
+                color: var(--text-secondary);
+              "
+            >
+              <li>
+                **Motivação:** Escalar o TSP encontrando *boas soluções* em
+                tempo razoável (complexidade do TSP exato é inviável).
+              </li>
+              <li>
+                **Implementação:** Utiliza seleção por Torneio, Crossover OX,
+                Mutação (Swap) e Elitismo.
+              </li>
+            </ul>
+
+            <h4
+              style="
+                font-size: 0.95rem;
+                font-weight: 700;
+                color: var(--accent-color);
+                margin: 0 0 8px 0;
+              "
+            >
+              Esta Visualização Web
+            </h4>
+            <ul
+              style="
+                list-style-type: disc;
+                margin: 0 0 0 15px;
+                padding: 0;
+                font-size: 0.85rem;
+                color: var(--text-secondary);
+              "
+            >
+              <li>
+                **Fase 1 (Atual):** Monte seu trajeto, defina as cidades e baixe
+                os dados (`.csv`).
+              </li>
+              <li>
+                **Fase 3 (Simulação):** Visualize a evolução em tempo real do
+                AG, a convergência de custo e o Top 10 de indivíduos.
+              </li>
+            </ul>
+          </div>
+
+          <div id="ga-strategy-info" class="data-card" style="display: none">
+            <h3 style="color: var(--accent-color)">
+              Estratégia e Operadores do Algoritmo Genético
+            </h3>
+            <p
+              style="
+                margin-bottom: 12px;
+                font-size: 0.9rem;
+                color: var(--text-secondary);
+              "
+            >
+              As configurações abaixo influenciam diretamente a convergência e a
+              qualidade da solução.
+            </p>
+            <div class="strategy-info" style="border-top: none; padding-top: 0">
+              <h4>Componentes Utilizados:</h4>
+              <ul style="list-style-type: none; margin-left: 0">
+                <li>
+                  **✅ Seleção:** **Torneio** ($k=5$). Escolhe o indivíduo de
+                  melhor *fitness* entre 5 amostras aleatórias da população.
+                </li>
+                <li>
+                  **✅ Crossover:** **Order Crossover (OX)**. Troca uma sub-rota
+                  entre os pais, preservando a ordem relativa dos pontos
+                  restantes. Essencial para problemas de ordenação (TSP).
+                </li>
+                <li>
+                  **✅ Mutação:** **Inversão (Inversion)**. Inverte a ordem de
+                  uma sub-seção aleatória da rota. A probabilidade é controlada
+                  pela **Taxa de Mutação** selecionada.
+                </li>
+                <li>
+                  **✅ Elitismo:** Preserva os **2 melhores** indivíduos da
+                  geração anterior (se a *flag* for ativada).
+                </li>
+              </ul>
             </div>
           </div>
-          <div class="data-card">
-            <h3>Top 10 Indivíduos (Geração Atual)</h3>
-            <div id="top-individuals-table"></div>
-          </div>
-          <div class="data-card">
-            <h3>Legenda das Cidades</h3>
-            <div id="city-legend"></div>
+
+          <div
+            id="simulation-data-view"
+            style="display: none; flex-direction: column; gap: 1.5rem"
+          >
+            <div class="data-card">
+              <h3>Convergência Genética</h3>
+              <div id="chart-container">
+                <canvas id="convergenceChart"></canvas>
+              </div>
+            </div>
+            <div class="data-card">
+              <h3>Top 10 Indivíduos (Geração Atual)</h3>
+              <div id="top-individuals-table"></div>
+            </div>
+            <div class="data-card">
+              <h3>Legenda das Cidades</h3>
+              <div id="city-legend"></div>
+            </div>
           </div>
         </div>
       </main>
@@ -433,10 +563,10 @@
       let currentPhase = "city-selection";
 
       const SPRITES = {
-        FLYING_0: "helicopter-flying-0",
-        FLYING_1: "helicopter-flying-1",
-        SHADOW_0: "shadow-helicopter-flying-0",
-        SHADOW_1: "shadow-helicopter-flying-1",
+        FLYING_0: "flying-0",
+        FLYING_1: "flying-1",
+        SHADOW_0: "shadow-0",
+        SHADOW_1: "shadow-1",
         LAYER_HELICOPTER: "planes-symbols",
         LAYER_SHADOW: "planes-shadow",
       };
@@ -470,15 +600,28 @@
         currentPhase = phase;
 
         const isCitySelection = phase === "city-selection";
+        const isGaSettings = phase === "ga-settings";
+        const isSimulation = phase === "simulation";
 
         document.getElementById("city-selection-panel").style.display =
           isCitySelection ? "block" : "none";
-        document.getElementById("ga-settings").style.display =
-          phase === "ga-settings" ? "block" : "none";
+        document.getElementById("ga-settings").style.display = isGaSettings
+          ? "block"
+          : "none";
         document.getElementById("simulation-controls").style.display =
-          phase === "simulation" ? "block" : "none";
+          isSimulation ? "block" : "none";
+
         document.getElementById("right-panel").style.display =
-          phase === "simulation" ? "flex" : "none";
+          isCitySelection || isGaSettings || isSimulation ? "flex" : "none";
+
+        document.getElementById("project-info").style.display = isCitySelection
+          ? "block"
+          : "none";
+        document.getElementById("ga-strategy-info").style.display = isGaSettings
+          ? "block"
+          : "none";
+        document.getElementById("simulation-data-view").style.display =
+          isSimulation ? "flex" : "none";
 
         map.getCanvas().style.cursor = isCitySelection ? "pointer" : "";
 
@@ -496,7 +639,7 @@
           isDragging = false;
           draggedPointId = null;
 
-          if (phase === "simulation") {
+          if (isSimulation) {
             if (!planeAnimationId) {
               animatePlanes(0);
             }
@@ -643,8 +786,8 @@
         const n = cities.length;
         population = [];
         costs = [];
-        gen = 0;
         bestCost = Infinity;
+        gen = 0;
         bestRoute = null;
         history = [];
         for (let i = 0; i < cfg.popSize; i++) {
@@ -1168,7 +1311,7 @@
         cfg.gensPerPlay =
           parseInt(document.getElementById("gensPerPlay").value, 10) || 20;
         cfg.mutRate =
-          parseInt(document.getElementById("mutRate").value, 10) || 30;
+          parseInt(document.getElementById("mutRate").value, 10) || 5;
         cfg.elitism = document.getElementById("chkElitism").checked;
 
         initPop();
