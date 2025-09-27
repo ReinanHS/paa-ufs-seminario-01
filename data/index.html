@@ -195,6 +195,19 @@
           margin-right: 8px;
           border: 1px solid rgba(0, 0, 0, 0.2);
         }
+
+        /* Novo estilo para a seção de download */
+        .download-section {
+          margin-top: 15px;
+          padding-top: 10px;
+          border-top: 1px dashed var(--border-color);
+        }
+        .download-section .controls {
+            justify-content: space-around;
+        }
+        .download-section p {
+            margin-bottom: 8px;
+        }
     </style>
 </head>
 <body>
@@ -217,6 +230,21 @@
                     >
                         Cidades Definidas: <b id="city-count">0</b>
                     </div>
+
+                    <!-- Nova seção de download -->
+                    <div class="download-section">
+                        <p>Baixar dados do trajeto (Pontos > 2):</p>
+                        <div class="controls">
+                            <button id="btnDownloadDistances" style="flex-grow: 1; min-width: 45%;">
+                                ⬇ Matriz de Distâncias (.csv)
+                            </button>
+                            <button id="btnDownloadPoints" style="flex-grow: 1; min-width: 45%;">
+                                ⬇ Pontos (.csv)
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Fim da nova seção -->
+
                     <button
                             id="btnConfirmCities"
                             class="primary"
@@ -383,10 +411,11 @@
       { name: "Boquim", lat: -11.1415, lng: -37.61916 },
     ];
     let cities = [];
-    let W = [];
+    let W;
     let isDragging = false;
     let draggedPointId = null;
     let cityColorPalette = [];
+    let currentPhase = "city-selection";
 
 
     const map = new maplibregl.Map({
@@ -414,16 +443,44 @@
 
 
     function setPhase(phase) {
+      currentPhase = phase;
+
+      const isCitySelection = phase === "city-selection";
+
       document.getElementById("city-selection-panel").style.display =
-        phase === "city-selection" ? "block" : "none";
+        isCitySelection ? "block" : "none";
       document.getElementById("ga-settings").style.display =
         phase === "ga-settings" ? "block" : "none";
       document.getElementById("simulation-controls").style.display =
         phase === "simulation" ? "block" : "none";
       document.getElementById("right-panel").style.display =
         phase === "simulation" ? "flex" : "none";
-      map.getCanvas().style.cursor =
-        phase === "city-selection" ? "pointer" : "";
+
+      map.getCanvas().style.cursor = isCitySelection ? "pointer" : "";
+
+
+      if (isCitySelection) {
+
+          map.on("click", onMapClick);
+          map.on("mousedown", "editable-cities-points", onMouseDown);
+      } else {
+
+          map.off("click", onMapClick);
+          map.off("mousedown", "editable-cities-points", onMouseDown);
+
+
+          map.off("mousemove", onMouseMove);
+          map.off("mouseup", onMouseUp);
+          isDragging = false;
+          draggedPointId = null;
+      }
+
+
+      const downloadButtons = document.querySelector(".download-section");
+      if (downloadButtons) {
+          const isDownloadEnabled = cities.length >= 3;
+          downloadButtons.style.display = isDownloadEnabled && isCitySelection ? "block" : "none";
+      }
     }
 
 
@@ -442,10 +499,14 @@
         .getSource("editable-cities")
         .setData({ type: "FeatureCollection", features: cityFeatures });
       document.getElementById("city-count").textContent = cities.length;
+
+
+
+      setPhase(currentPhase);
     }
 
     function onMapClick(e) {
-      if (isDragging) return;
+      if (isDragging || currentPhase !== "city-selection") return;
       const features = map.queryRenderedFeatures(e.point, {
         layers: ["editable-cities-points"],
       });
@@ -466,6 +527,7 @@
     }
 
     function onMouseDown(e) {
+      if (currentPhase !== "city-selection") return;
       const features = map.queryRenderedFeatures(e.point, {
         layers: ["editable-cities-points"],
       });
@@ -479,7 +541,7 @@
     }
 
     function onMouseMove(e) {
-      if (!isDragging) return;
+      if (!isDragging || currentPhase !== "city-selection") return;
       const { lng, lat } = e.lngLat;
       cities[draggedPointId].lng = lng;
       cities[draggedPointId].lat = lat;
@@ -487,6 +549,7 @@
     }
 
     function onMouseUp() {
+      if (currentPhase !== "city-selection") return;
       isDragging = false;
       draggedPointId = null;
       map.getCanvas().style.cursor = "pointer";
@@ -501,6 +564,7 @@
         for (let j = 0; j < n; j++) {
           W[i][j] = i === j ? 0 : haversineKm(cities[i], cities[j]);
         }
+
     }
     function haversineKm(a, b) {
       const R = 6371;
@@ -579,6 +643,8 @@
       updateStats();
     }
     function routeCost(r) {
+
+      if (!W || W.length === 0) return Infinity;
       let s = 0;
       for (let k = 0; k < r.length - 1; k++) s += W[r[k]][r[k + 1]];
       return s + W[r[r.length - 1]][r[0]];
@@ -860,18 +926,101 @@
       document.getElementById("btnStep").disabled = isPlaying;
       document.getElementById("btnPause").disabled = !isPlaying;
     }
+
+
+
+    /**
+     * Gera o conteúdo CSV para os pontos (cidades).
+     * @returns {string} Conteúdo CSV.
+     */
+    function generatePointsCsv() {
+        const header = "Indice,Nome,Latitude,Longitude";
+        const rows = cities.map((city, index) => {
+
+            const name = `"${city.name.replace(/"/g, '""')}"`;
+            return `${index},${name},${city.lat.toFixed(8)},${city.lng.toFixed(8)}`;
+        });
+        return [header, ...rows].join('\n');
+    }
+
+    /**
+     * Gera o conteúdo CSV para a matriz de distâncias.
+     * Requer que a matriz W tenha sido calculada (buildMatrix).
+     * @returns {string} Conteúdo CSV.
+     */
+    function generateDistancesCsv() {
+
+        if (!W || W.length === 0) {
+
+            buildMatrix();
+        }
+
+        const n = W.length;
+
+        const header = "Origem/Destino," + [...Array(n).keys()].join(',');
+
+        const rows = W.map((row, rowIndex) => {
+
+            const rowData = row.map(distance => distance.toFixed(2));
+            return `${rowIndex},${rowData.join(',')}`;
+        });
+
+        return [header, ...rows].join('\n');
+    }
+
+    /**
+     * Cria e dispara o download de um arquivo.
+     * @param {string} filename Nome do arquivo.
+     * @param {string} text Conteúdo do arquivo.
+     */
+    function downloadFile(filename, text) {
+        const element = document.createElement('a');
+        element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(text));
+        element.setAttribute('download', filename);
+        element.style.display = 'none';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+    }
+
+
+
+
     document
       .getElementById("btnConfirmCities")
       .addEventListener("click", () => {
         if (cities.length < 3) {
-          alert("Por favor, defina pelo menos 3 cidades para o trajeto.");
+
+
+          console.error("Por favor, defina pelo menos 3 cidades para o trajeto.");
           return;
         }
-        map.off("click", onMapClick);
-        map.off("mousedown", onMouseDown);
+
         buildMatrix();
         setPhase("ga-settings");
       });
+
+
+    document.getElementById("btnDownloadDistances").addEventListener("click", () => {
+        if (cities.length < 3) {
+            console.error("É necessário pelo menos 3 cidades para gerar a Matriz de Distâncias.");
+            return;
+        }
+        buildMatrix();
+        const csvContent = generateDistancesCsv();
+        downloadFile("matriz_distancias.csv", csvContent);
+    });
+
+
+    document.getElementById("btnDownloadPoints").addEventListener("click", () => {
+        if (cities.length < 1) {
+             console.error("Não há pontos definidos para download.");
+            return;
+        }
+        const csvContent = generatePointsCsv();
+        downloadFile("pontos_caixeiro_viajante.csv", csvContent);
+    });
+
     document.getElementById("btnStart").addEventListener("click", () => {
       cfg.popSize =
         parseInt(document.getElementById("popSize").value, 10) || 150;
@@ -928,9 +1077,9 @@
         ...c,
         color: cityColorPalette[i % cityColorPalette.length],
       }));
+      W = undefined;
       refreshEditableCities();
-      map.on("click", onMapClick);
-      map.on("mousedown", "editable-cities-points", onMouseDown);
+
       setPhase("city-selection");
     });
     document
@@ -962,8 +1111,7 @@
         color: cityColorPalette[i % cityColorPalette.length],
       }));
       refreshEditableCities();
-      map.on("click", onMapClick);
-      map.on("mousedown", "editable-cities-points", onMouseDown);
+
       setPhase("city-selection");
     });
 </script>
