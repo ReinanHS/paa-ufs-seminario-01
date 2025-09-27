@@ -208,6 +208,16 @@
       .download-section p {
         margin-bottom: 8px;
       }
+      /* Estilo para input number de largura pequena */
+      .config-input {
+        width: 80px;
+        padding: 0.3rem;
+        border-radius: 6px;
+        background: #1f2937;
+        color: white;
+        border: 1px solid #374151;
+        text-align: center;
+      }
     </style>
   </head>
   <body>
@@ -231,7 +241,6 @@
                 Cidades Definidas: <b id="city-count">0</b>
               </div>
 
-              <!-- Nova seção de download -->
               <div class="download-section">
                 <p>Baixar dados do trajeto (Pontos > 2):</p>
                 <div class="controls">
@@ -249,7 +258,6 @@
                   </button>
                 </div>
               </div>
-              <!-- Fim da nova seção -->
 
               <button
                 id="btnConfirmCities"
@@ -271,26 +279,33 @@
                   min="10"
                   max="500"
                   step="10"
-                  style="
-                    width: 80px;
-                    padding: 0.3rem;
-                    border-radius: 6px;
-                    background: #1f2937;
-                    color: white;
-                    border: 1px solid #374151;
-                  "
+                  class="config-input"
                 />
               </div>
+
               <div class="row">
                 <label for="gensPerPlay">Gerações por Play</label
                 ><input
                   id="gensPerPlay"
-                  type="range"
+                  type="number"
                   min="1"
-                  max="100"
+                  max="500"
                   step="1"
                   value="20"
-                  style="width: 130px"
+                  class="config-input"
+                />
+              </div>
+
+              <div class="row">
+                <label for="mutRate">Taxa de Mutação (%)</label
+                ><input
+                  id="mutRate"
+                  type="number"
+                  min="0"
+                  max="100"
+                  step="1"
+                  value="5"
+                  class="config-input"
                 />
               </div>
               <div class="row">
@@ -332,9 +347,9 @@
                     width: 180px;
                   "
                 >
-                  <option value="1" selected>O melhor indivíduo</option>
+                  <option value="1">O melhor indivíduo</option>
                   <option value="2">Os 2 melhores</option>
-                  <option value="5">Os 5 melhores</option>
+                  <option value="5" selected>Os 5 melhores</option>
                   <option value="10">Os 10 melhores</option>
                   <option value="all">Toda a População</option>
                 </select>
@@ -352,8 +367,8 @@
                     width: 180px;
                   "
                 >
-                  <option value="60">1 Minuto</option>
-                  <option value="120" selected>2 Minutos</option>
+                  <option value="60" selected>1 Minuto</option>
+                  <option value="120">2 Minutos</option>
                   <option value="0">Instantâneo</option>
                 </select>
               </div>
@@ -651,12 +666,17 @@
         );
         const l = i.slice(0, e).map((i) => population[i].slice());
         const nP = [...l];
+
+        const mutProb = cfg.mutRate / 100;
+
         while (nP.length < cfg.popSize) {
           const p1 = tournament(population, 5);
           const p2 = tournament(population, 5);
           let [c1, c2] = Math.random() < 0.9 ? ox(p1, p2) : [p1, p2];
-          if (Math.random() < 0.3) mutInv(c1);
-          if (Math.random() < 0.3) mutInv(c2);
+
+          if (Math.random() < mutProb) mutInv(c1);
+          if (Math.random() < mutProb) mutInv(c2);
+
           nP.push(c1);
           if (nP.length < cfg.popSize) nP.push(c2);
         }
@@ -922,7 +942,7 @@
               st.sI = Math.floor(st.prog);
 
               let rotation = 0;
-              let currentCoords, nextCoords;
+              let currentCoords;
               let currentCity, nextCity;
 
               if (st.sI >= st.route.length - 1) {
@@ -1145,7 +1165,12 @@
       document.getElementById("btnStart").addEventListener("click", () => {
         cfg.popSize =
           parseInt(document.getElementById("popSize").value, 10) || 150;
+        cfg.gensPerPlay =
+          parseInt(document.getElementById("gensPerPlay").value, 10) || 20;
+        cfg.mutRate =
+          parseInt(document.getElementById("mutRate").value, 10) || 30;
         cfg.elitism = document.getElementById("chkElitism").checked;
+
         initPop();
         routeColors = generateHslaColors(cfg.popSize, 100, 60, 0.9);
         initConvergenceChart();
@@ -1155,7 +1180,7 @@
         setPhase("simulation");
       });
       document.getElementById("btnPlay").addEventListener("click", async () => {
-        const b = Number(document.getElementById("gensPerPlay").value);
+        const b = cfg.gensPerPlay;
         const t = Number(document.getElementById("simTime").value);
         stopAnim = false;
         setControlsState(true);
