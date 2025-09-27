@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AG do Caixeiro-Viajante • Editor Interativo</title>
+    <link
+      href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="./style.css" />
+    <script defer src="./index.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <header><h1>AG TSP – Editor Interativo</h1></header>
+      <main class="main-container">
+        <div id="map-container">
+          <div id="map"></div>
+          <div class="panel">
+            <div id="city-selection-panel">
+              <h2>1. Monte seu Trajeto</h2>
+              <p>
+                <b>Adicionar:</b> Clique em um local vazio no mapa.<br />
+                <b>Mover:</b> Clique e arraste um ponto existente.<br />
+                <b>Remover:</b> Clique em um ponto existente.
+              </p>
+              <div
+                class="row"
+                style="justify-content: center; font-size: 1.1rem"
+              >
+                Cidades Definidas: <b id="city-count">0</b>
+              </div>
+
+              <div class="download-section">
+                <p>Baixar dados do trajeto (Pontos > 2):</p>
+                <div class="controls">
+                  <button
+                    id="btnDownloadDistances"
+                    style="flex-grow: 1; min-width: 45%"
+                  >
+                    ⬇ Matriz de Distâncias (.csv)
+                  </button>
+                  <button
+                    id="btnDownloadPoints"
+                    style="flex-grow: 1; min-width: 45%"
+                  >
+                    ⬇ Pontos (.csv)
+                  </button>
+                </div>
+              </div>
+
+              <button
+                id="btnConfirmCities"
+                class="primary"
+                style="width: 100%; margin-top: 10px"
+              >
+                Confirmar Cidades e Prosseguir
+              </button>
+            </div>
+
+            <div id="ga-settings" style="display: none">
+              <h2>2. Configure o Algoritmo</h2>
+              <div class="row">
+                <label for="popSize">Tamanho da População</label
+                ><input
+                  id="popSize"
+                  type="number"
+                  value="150"
+                  min="10"
+                  max="500"
+                  step="10"
+                  class="config-input"
+                />
+              </div>
+
+              <div class="row">
+                <label for="gensPerPlay">Gerações por Play</label
+                ><input
+                  id="gensPerPlay"
+                  type="number"
+                  min="1"
+                  max="500"
+                  step="1"
+                  value="20"
+                  class="config-input"
+                />
+              </div>
+
+              <div class="row">
+                <label for="mutRate">Taxa de Mutação (%)</label
+                ><input
+                  id="mutRate"
+                  type="number"
+                  min="0"
+                  max="100"
+                  step="1"
+                  value="5"
+                  class="config-input"
+                />
+              </div>
+              <div class="row">
+                <label for="chkElitism">Utilizar Elitismo</label
+                ><input
+                  id="chkElitism"
+                  type="checkbox"
+                  checked
+                  style="width: 20px; height: 20px"
+                />
+              </div>
+
+              <button
+                id="btnStart"
+                class="primary"
+                style="width: 100%; margin-top: 15px"
+              >
+                Iniciar Simulação
+              </button>
+            </div>
+
+            <div id="simulation-controls" style="display: none">
+              <h2>3. Simulação em Andamento</h2>
+              <div class="controls">
+                <button id="btnPlay" class="primary">▶ Play</button>
+                <button id="btnPause" class="secondary">⏸ Pausar</button>
+                <button id="btnStep" class="secondary">⏭ 1 geração</button>
+                <button id="btnReset" class="secondary">↺ Reiniciar</button>
+              </div>
+              <div class="row">
+                <label for="displayMode">Modo de Exibição</label
+                ><select
+                  id="displayMode"
+                  style="
+                    padding: 0.3rem;
+                    border-radius: 6px;
+                    background: #1f2937;
+                    color: white;
+                    border: 1px solid #374151;
+                    width: 180px;
+                  "
+                >
+                  <option value="1">O melhor indivíduo</option>
+                  <option value="2">Os 2 melhores</option>
+                  <option value="5" selected>Os 5 melhores</option>
+                  <option value="10">Os 10 melhores</option>
+                  <option value="all">Toda a População</option>
+                </select>
+              </div>
+              <div class="row">
+                <label for="simTime">Tempo Máx. (por Play)</label
+                ><select
+                  id="simTime"
+                  style="
+                    padding: 0.3rem;
+                    border-radius: 6px;
+                    background: #1f2937;
+                    color: white;
+                    border: 1px solid #374151;
+                    width: 180px;
+                  "
+                >
+                  <option value="60" selected>1 Minuto</option>
+                  <option value="120">2 Minutos</option>
+                  <option value="0">Instantâneo</option>
+                </select>
+              </div>
+              <div class="controls" style="gap: 0.75rem; margin-top: 10px">
+                <span class="stat">Geração: <b id="statGen">0</b></span
+                ><span class="stat"
+                  >Melhor custo (km): <b id="statCost">–</b></span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="right-panel">
+          <div id="project-info" class="data-card">
+            <h3>Seminário 1: Problema do Caixeiro Viajante (PCV/TSP)</h3>
+            <p style="margin-bottom: 12px; font-size: 0.9rem">
+              Este é um projeto de simulação para a disciplina de **Projeto e
+              Análise de Algoritmos (PAA) da UFS**.
+            </p>
+
+            <h4
+              style="
+                font-size: 0.95rem;
+                font-weight: 700;
+                color: var(--accent-color);
+                margin: 0 0 8px 0;
+              "
+            >
+              Abordagem: Algoritmo Genético (AG)
+            </h4>
+            <ul
+              style="
+                list-style-type: disc;
+                margin: 0 0 15px 15px;
+                padding: 0;
+                font-size: 0.85rem;
+                color: var(--text-secondary);
+              "
+            >
+              <li>
+                **Motivação:** Escalar o TSP encontrando *boas soluções* em
+                tempo razoável (complexidade do TSP exato é inviável).
+              </li>
+              <li>
+                **Implementação:** Utiliza seleção por Torneio, Crossover OX,
+                Mutação (Swap) e Elitismo.
+              </li>
+            </ul>
+
+            <h4
+              style="
+                font-size: 0.95rem;
+                font-weight: 700;
+                color: var(--accent-color);
+                margin: 0 0 8px 0;
+              "
+            >
+              Esta Visualização Web
+            </h4>
+            <ul
+              style="
+                list-style-type: disc;
+                margin: 0 0 0 15px;
+                padding: 0;
+                font-size: 0.85rem;
+                color: var(--text-secondary);
+              "
+            >
+              <li>
+                **Fase 1 (Atual):** Monte seu trajeto, defina as cidades e baixe
+                os dados (`.csv`).
+              </li>
+              <li>
+                **Fase 3 (Simulação):** Visualize a evolução em tempo real do
+                AG, a convergência de custo e o Top 10 de indivíduos.
+              </li>
+            </ul>
+          </div>
+
+          <div id="ga-strategy-info" class="data-card" style="display: none">
+            <h3 style="color: var(--accent-color)">
+              Estratégia e Operadores do Algoritmo Genético
+            </h3>
+            <p
+              style="
+                margin-bottom: 12px;
+                font-size: 0.9rem;
+                color: var(--text-secondary);
+              "
+            >
+              As configurações abaixo influenciam diretamente a convergência e a
+              qualidade da solução.
+            </p>
+            <div class="strategy-info" style="border-top: none; padding-top: 0">
+              <h4>Componentes Utilizados:</h4>
+              <ul style="list-style-type: none; margin-left: 0">
+                <li>
+                  **✅ Seleção:** **Torneio** ($k=5$). Escolhe o indivíduo de
+                  melhor *fitness* entre 5 amostras aleatórias da população.
+                </li>
+                <li>
+                  **✅ Crossover:** **Order Crossover (OX)**. Troca uma sub-rota
+                  entre os pais, preservando a ordem relativa dos pontos
+                  restantes. Essencial para problemas de ordenação (TSP).
+                </li>
+                <li>
+                  **✅ Mutação:** **Inversão (Inversion)**. Inverte a ordem de
+                  uma sub-seção aleatória da rota. A probabilidade é controlada
+                  pela **Taxa de Mutação** selecionada.
+                </li>
+                <li>
+                  **✅ Elitismo:** Preserva os **2 melhores** indivíduos da
+                  geração anterior (se a *flag* for ativada).
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div
+            id="simulation-data-view"
+            style="display: none; flex-direction: column; gap: 1.5rem"
+          >
+            <div class="data-card">
+              <h3>Convergência Genética</h3>
+              <div id="chart-container">
+                <canvas id="convergenceChart"></canvas>
+              </div>
+            </div>
+            <div class="data-card">
+              <h3>Top 10 Indivíduos (Geração Atual)</h3>
+              <div id="top-individuals-table"></div>
+            </div>
+            <div class="data-card">
+              <h3>Legenda das Cidades</h3>
+              <div id="city-legend"></div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

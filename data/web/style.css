@@ -1,0 +1,222 @@
+:root {
+  --bg-dark: #0f172a;
+  --bg-light: #1e293b;
+  --border-color: #334155;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --accent-color: #2563eb;
+}
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
+    "Helvetica Neue", Arial;
+  background: #0b0f19;
+  color: var(--text-primary);
+}
+#app {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100vh;
+}
+header {
+  display: flex;
+  align-items: center;
+  padding: 0.65rem 1.2rem;
+  background: var(--bg-dark);
+  border-bottom: 1px solid #0b1220;
+}
+header h1 {
+  margin: 0;
+  font-size: 1.1rem;
+  letter-spacing: 0.2px;
+}
+
+.main-container {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  height: 100%;
+  overflow: hidden;
+}
+#map-container {
+  position: relative;
+  height: 100%;
+}
+#map {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+#right-panel {
+  background: var(--bg-dark);
+  padding: 1rem;
+  overflow-y: auto;
+  border-left: 1px solid #0b1220;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.panel {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 10;
+  background: rgba(15, 23, 42, 0.9);
+  backdrop-filter: blur(4px);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+  min-width: 350px;
+}
+.panel p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 0 0 10px;
+  line-height: 1.4;
+}
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.35rem;
+}
+button {
+  border: 0;
+  border-radius: 10px;
+  padding: 0.48rem 0.76rem;
+  font-weight: 700;
+  background: #374151;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+button.primary {
+  background: var(--accent-color);
+}
+button:hover:not(:disabled) {
+  opacity: 0.9;
+}
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+label {
+  font-size: 0.9rem;
+}
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 0.4rem 0;
+}
+.stat {
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 8px;
+  padding: 0.35rem 0.55rem;
+  font-variant-numeric: tabular-nums;
+}
+h2 {
+  font-size: 1.1rem;
+  margin: 0 0 10px 0;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 8px;
+}
+
+.data-card {
+  background: var(--bg-light);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1rem;
+}
+.data-card h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+#chart-container {
+  position: relative;
+  height: 250px;
+}
+#top-individuals-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+#top-individuals-table th,
+#top-individuals-table td {
+  padding: 6px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+#top-individuals-table th {
+  color: var(--text-secondary);
+}
+#top-individuals-table .chromosome {
+  font-family: monospace;
+  word-break: break-all;
+}
+
+#city-legend {
+  font-size: 0.8rem;
+  columns: 2;
+  column-gap: 1rem;
+}
+#city-legend p {
+  margin: 4px 0;
+  display: flex;
+  align-items: center;
+}
+.legend-color-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.download-section {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border-color);
+}
+.download-section .controls {
+  justify-content: space-around;
+}
+.download-section p {
+  margin-bottom: 8px;
+}
+
+.config-input {
+  width: 80px;
+  padding: 0.3rem;
+  border-radius: 6px;
+  background: #1f2937;
+  color: white;
+  border: 1px solid #374151;
+  text-align: center;
+}
+
+.strategy-info h4 {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+.strategy-info ul {
+  margin: 0 0 10px 10px;
+  padding: 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  list-style-type: none;
+}
+.strategy-info li {
+  margin-bottom: 5px;
+}
