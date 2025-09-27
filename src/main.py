@@ -316,8 +316,8 @@ def main():
     print(f"Melhor rota (sequência de cidades): {melhor_rota}")
 
     print("\nGerando visualizações...")
-    plot_melhor_rota(tsp, melhor_rota, melhor_custo, save_as=None)
-    plot_convergencia(historico, save_as=None)
+    plot_melhor_rota(tsp, melhor_rota, melhor_custo, save_as="plot_melhor_rota.png")
+    plot_convergencia(historico, save_as="plot_convergencia.png")
 
 
 if __name__ == "__main__":

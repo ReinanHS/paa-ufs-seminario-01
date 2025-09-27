@@ -118,3 +118,5 @@ fabric.properties
 .venv
 .pytest_cache
 __pycache__
+plot_melhor_rota.png
+plot_convergencia.png
