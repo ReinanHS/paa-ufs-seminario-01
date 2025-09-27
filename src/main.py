@@ -32,8 +32,7 @@ def read_text(path: pathlib.Path, encoding="utf-8") -> str:
 
 def read_csv_clean(path_or_str: str, **read_csv_kwargs) -> pd.DataFrame:
     """
-    Lê CSV e corrige caso a primeira linha venha com prefixo 'data:text/csv,...'
-    sem tocar nas demais linhas.
+    A principal finalidade desta função consiste na realização da leitura do arquivo CSV.
     """
     p = pathlib.Path(path_or_str)
     raw = read_text(p, encoding="utf-8")
