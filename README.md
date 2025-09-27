@@ -83,9 +83,9 @@ O link abaixo direciona para o vídeo hospedado no YouTube, que registra a apres
 caixeiro viajante. Nele, são abordados os principais aspectos do tema, juntamente com um exemplo prático da execução do
 algoritmo desenvolvido neste repositório.
 
-[![Youtube Video](https://gitlab.com/reinanhs/repo-slide-presentation/-/wikis/uploads/b199b81b500596ac3a93a542b6a17775/image.png)](https://youtu.be/dQw4w9WgXcQ)
+[![Youtube Video](https://gitlab.com/reinanhs/repo-slide-presentation/-/wikis/uploads/b199b81b500596ac3a93a542b6a17775/image.png)](https://youtu.be/Dx7mtMMPKDA)
 
-- 📹 **Assista:** [https://youtu.be/dQw4w9WgXcQ](https://youtu.be/dQw4w9WgXcQ)
+- 📹 **Assista:** [https://youtu.be/Dx7mtMMPKDA](https://youtu.be/Dx7mtMMPKDA)
 
 > Exigência do professor: O README deve conter o link do vídeo no YouTube.
 
