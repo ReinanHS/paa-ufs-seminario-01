@@ -316,6 +316,7 @@ Ajuste esses valores em `src/main.py` conforme o tempo disponível e a qualidade
 ## Links úteis
 
 - [Slides (Google Slides)](https://docs.google.com/presentation/d/1X6qxrnNSXACRhkNveZjIO241CHSsGpuZnD-f4Vr6eQY/edit?slide=id.p#slide=id.p)
+- [Slide em PDF](./data/slide.pdf)
 - [GitHub Pages (Frontend)](https://reinanhs.github.io/paa-ufs-seminario-01/)
 - [CI (Actions)](https://github.com/ReinanHS/paa-ufs-seminario-01/actions)
 - [Vídeo no Youtube](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
